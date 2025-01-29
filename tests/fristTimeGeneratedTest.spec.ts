@@ -2,7 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
   await page.goto('https://magento.softwaretestingboard.com/');
-  await page.getByRole('button', { name: 'AGREE', exact: true }).click();
+  const agreeButton = page.getByRole('button', { name: 'AGREE', exact: true });
+  await agreeButton.waitFor({ state: 'visible', timeout: 60000 });
+  await agreeButton.click();
   await page.getByRole('link', { name: 'Radiant Tee' }).first().click();
   await expect(page.locator('h1')).toContainText('Radiant Tee');
   await expect(page.locator('#product-price-1556')).toContainText('$22.00');
