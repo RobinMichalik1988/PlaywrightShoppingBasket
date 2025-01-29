@@ -1,9 +1,20 @@
 import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
-  await page.goto('https://magento.softwaretestingboard.com/');
-  await page.waitForLoadState('load');
-  await page.getByRole('button', { name: 'AGREE', exact: true }).click();
+  await page.goto('https://magento.softwaretestingboard.com/', { waitUntil: 'load' });
+
+  // Maak een screenshot en log de pagina-inhoud
+  await page.screenshot({ path: 'before-load.png' });
+  console.log(await page.content());
+  await page.screenshot({ path: 'before-click.png' });
+
+  // Controleer of de cookiebanner zichtbaar is
+  const agreeButton = page.getByRole('button', { name: 'AGREE', exact: true });
+  if (await agreeButton.isVisible()) {
+    await agreeButton.click();
+  }
+
+  // Voer de rest van de test uit
   await page.getByRole('link', { name: 'Radiant Tee' }).first().click();
   await expect(page.locator('h1')).toContainText('Radiant Tee');
   await expect(page.locator('#product-price-1556')).toContainText('$22.00');
