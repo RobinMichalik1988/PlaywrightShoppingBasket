@@ -1,18 +1,23 @@
-import { type Page, type Locator } from "playwright/test";
+import exp from "constants";
+import { type Page, type Locator, expect } from "playwright/test";
 
 export class BasePage {
     readonly page: Page;
     readonly magentoLogo: Locator;
     readonly cookieButton: Locator;
     readonly miniCart: Locator;
-    readonly miniCartViewAndEdit: Locator;
+    readonly minicartContent: Locator;
+    readonly shoppingBasket: Locator;
+    readonly minicart
 
     constructor(page: Page) {
         this.page = page;
         this.magentoLogo = page.getByRole('link', { name: 'Magento Logo' });
         this.cookieButton = page.getByRole('button', { name: 'AGREE', exact: true });
-        this.miniCart = page.getByRole('link', { name: ' My Cart' });
-        this.miniCartViewAndEdit = page.getByRole('link', { name: 'View and Edit Cart' });
+        this.miniCart = page.locator('.action.showcart');
+        this.minicartContent = page.locator('#ui-id-1');
+        this.shoppingBasket = page.getByRole('link', { name: 'View and Edit Cart' });
+
     }
 
     async goTo(): Promise<void> {
@@ -33,14 +38,22 @@ export class BasePage {
     }
 
     async goToMiniShoppingBasket(): Promise<void> {
-        await this.miniCart.click();
+        if (await !this.minicartContent.isVisible()) {
+            await this.minicartContent.click();
+        }
+    }
+
+    async closeMiniShoppingBasket(): Promise<void> {
+        if (await this.minicartContent.isVisible()) {
+            await this.minicartContent.click();
+        }
     }
 
     async goToShoppingBasketAfterMiniBasketIsVisible(): Promise<void> {
-        await this.miniCartViewAndEdit.click();
+        await this.shoppingBasket.click();
     }
 
-    async goToShoppingBasket(): Promise<void> {
+    async goToShoppingBasketThroughMiniCart(): Promise<void> {
         await this.goToMiniShoppingBasket();
         await this.goToShoppingBasketAfterMiniBasketIsVisible();
     }
