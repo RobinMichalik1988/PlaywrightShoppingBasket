@@ -16,12 +16,12 @@ export class ProductPage extends BasePage {
         super(page);
         this.sizeSelectorM = page.getByRole('option', { name: 'M' });  
         this.OrangeColorSelector = page.getByRole('option', { name: 'Orange' }); 
-        this.addToCartButton = page.locator('button[name="add-to-cart"]');  
+        this.addToCartButton = page.getByRole('button', { name: 'Add to Cart' });  
         this.productName = page.locator('h1');  
         this.productPrice = page.locator('#product-price-1556');  
         this.SizeErrorMessage = page.locator('[id="super_attribute\\[143\\]-error"]'); 
         this.ColorErrorMessage = page.locator('[id="super_attribute\\[93\\]-error"]');
-        this.successMessage = page.locator('div[data-role="success-message"]');
+        this.successMessage = page.getByRole('alert').locator('div').first();
         this.successMessageText = page.locator('div[data-role="success-message"] div'); 
     }
 
@@ -35,6 +35,7 @@ export class ProductPage extends BasePage {
 
     async addToCart(): Promise<void> {
         await this.addToCartButton.click();
+        await this.successMessage.waitFor({ state: "visible" });
     }
 
     async getProductName(): Promise<string> {

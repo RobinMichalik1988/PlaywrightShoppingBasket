@@ -8,7 +8,7 @@ export class BasePage {
     readonly miniCart: Locator;
     readonly minicartContent: Locator;
     readonly shoppingBasket: Locator;
-    readonly minicart
+    
 
     constructor(page: Page) {
         this.page = page;
@@ -38,9 +38,10 @@ export class BasePage {
     }
 
     async goToMiniShoppingBasket(): Promise<void> {
-        if (await !this.minicartContent.isVisible()) {
-            await this.minicartContent.click();
-        }
+            if (await this.minicartContent.isVisible() === false) {
+                await this.miniCart.click();
+            }
+        
     }
 
     async closeMiniShoppingBasket(): Promise<void> {
